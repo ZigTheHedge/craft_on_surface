@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "craft_on_surface:tool_handle"
+    },
+    "M": {
+      "tag": "forge:ingots/gold"
+    }
+  },
+  "pattern": [
+    "MM",
+    "SM"
+  ],
+  "result": {
+    "item": "minecraft:golden_sword"
+  },
+  "show_notification": true
+}

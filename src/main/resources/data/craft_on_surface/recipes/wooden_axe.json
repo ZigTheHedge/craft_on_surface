@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "craft_on_surface:tool_handle"
+    },
+    "B": {
+      "item": "craft_on_surface:tool_binding"
+    },
+    "M": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    " B",
+    "SM"
+  ],
+  "result": {
+    "item": "minecraft:wooden_axe"
+  },
+  "show_notification": true
+}

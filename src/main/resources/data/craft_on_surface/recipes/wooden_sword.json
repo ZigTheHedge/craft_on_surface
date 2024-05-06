@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "craft_on_surface:tool_handle"
+    },
+    "M": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "pattern": [
+    "MM",
+    "SM"
+  ],
+  "result": {
+    "item": "minecraft:wooden_sword"
+  },
+  "show_notification": true
+}

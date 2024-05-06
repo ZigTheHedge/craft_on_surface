@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "craft_on_surface:block/surface_crafting_dummy_block"
+    }
+  }
+}

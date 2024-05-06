@@ -1,0 +1,19 @@
+{
+  "type": "craft_on_surface:surface_crafting_recipe",
+  "materials": [
+    {
+      "tag": "forge:rods/wooden"
+    },
+    {
+      "tag": "forge:rods/wooden"
+    },
+    {
+      "tag": "forge:string"
+    }
+  ],
+  "output":
+  {
+      "item": "craft_on_surface:tool_handle"
+  },
+  "surface_block": "$solid"
+}

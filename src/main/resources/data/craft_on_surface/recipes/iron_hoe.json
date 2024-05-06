@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "S": {
+      "item": "craft_on_surface:tool_handle"
+    },
+    "B": {
+      "item": "craft_on_surface:tool_binding"
+    },
+    "M": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "MB",
+    "S "
+  ],
+  "result": {
+    "item": "minecraft:iron_hoe"
+  },
+  "show_notification": true
+}
