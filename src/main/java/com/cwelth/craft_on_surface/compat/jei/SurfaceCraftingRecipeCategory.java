@@ -55,5 +55,6 @@ public class SurfaceCraftingRecipeCategory implements IRecipeCategory<SurfaceCra
             builder.addSlot(RecipeIngredientRole.INPUT, 13 + i * 18, 34).addIngredients(recipe.getMaterial(8+i));
         }
         builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 55).addItemStack(recipe.getResultItem());
+
     }
 }
