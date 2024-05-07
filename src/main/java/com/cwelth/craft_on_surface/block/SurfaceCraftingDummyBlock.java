@@ -95,6 +95,7 @@ public class SurfaceCraftingDummyBlock extends BaseEntityBlock {
             if (be != null) {
                 ItemStack useItem = pPlayer.getItemInHand(InteractionHand.MAIN_HAND);
                 ItemStack lastItem = be.popStack();
+                /*
                 if (useItem.isEmpty()) {
                     pPlayer.setItemInHand(InteractionHand.MAIN_HAND, lastItem);
                 } else if (useItem.is(lastItem.getItem()) && useItem.getCount() < useItem.getMaxStackSize()) {
@@ -102,6 +103,9 @@ public class SurfaceCraftingDummyBlock extends BaseEntityBlock {
                 } else {
                     Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), lastItem);
                 }
+
+                 */
+                Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), lastItem);
             }
         }
     }

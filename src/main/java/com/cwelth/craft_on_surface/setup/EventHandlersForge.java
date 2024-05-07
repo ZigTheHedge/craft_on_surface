@@ -3,6 +3,7 @@ package com.cwelth.craft_on_surface.setup;
 import com.cwelth.craft_on_surface.CraftOnSurface;
 import com.cwelth.craft_on_surface.block.entity.SurfaceCraftingDummyBlockEntity;
 import com.cwelth.craft_on_surface.recipe.SurfaceCraftingRecipe;
+import com.cwelth.craft_on_surface.recipe.SurfaceCraftingReloadListener;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
@@ -14,16 +15,18 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ForgeBlockTagsProvider;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.List;
 import java.util.Optional;
 
 public class EventHandlersForge {
-    public List<SurfaceCraftingRecipe> surfaceCraftingRecipes = null;
+    public static List<SurfaceCraftingRecipe> surfaceCraftingRecipes = null;
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onItemUse(PlayerInteractEvent.RightClickBlock event)
     {
         if(event.getLevel().isClientSide()) return;
@@ -55,11 +58,19 @@ public class EventHandlersForge {
                         if(be != null)
                         {
                             be.pushStack(usedItem);
+                            event.setCanceled(true);
                             break;
                         }
                     }
                 }
             }
         }
+    }
+
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void OnDatapackReload(AddReloadListenerEvent event)
+    {
+        event.addListener(new SurfaceCraftingReloadListener());
     }
 }
