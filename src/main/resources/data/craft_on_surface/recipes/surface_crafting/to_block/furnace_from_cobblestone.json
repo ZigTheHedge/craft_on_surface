@@ -1,0 +1,32 @@
+{
+  "type": "craft_on_surface:surface_crafting_recipe",
+  "materials": [
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    },
+    {
+      "tag": "minecraft:stone_crafting_materials"
+    }
+  ],
+  "output": "minecraft:furnace",
+  "result_type": "BLOCK",
+  "surface_block": "#minecraft:mineable/pickaxe"
+}

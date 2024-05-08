@@ -3,5 +3,10 @@
   "item.craft_on_surface.tool_binding": "Tool Binding",
   "creativetab.creative_tab": "Craft On Surface",
 
-  "block.craft_on_surface.surface_crafting_dummy_block": "Surface Crafting"
+  "jei.surface_crafting.any_solid_required": "Any Solid Surface Required",
+  "jei.surface_crafting.any_nonsolid_required": "Any Non-Solid Surface Required",
+  "jei.items_in_liquid_crafting.fluid_consumed": "Liquid is consumed",
+
+  "block.craft_on_surface.surface_crafting_dummy_block": "Surface Crafting",
+  "block.craft_on_surface.items_in_liquid_block": "Toss Items in Liquid"
 }

@@ -8,12 +8,16 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +81,7 @@ public class SurfaceCraftingDummyBlockEntity extends BlockEntity {
         Containers.dropContents(this.level, this.worldPosition, inventory);
     }
 
-    public ItemStack craft()
+    public ItemStack craft(Player player, BlockHitResult hitResult)
     {
         SimpleContainer inventory = new SimpleContainer(this.itemStackHandler.getSlots());
         for(int i = 0; i < itemStackHandler.getSlots(); i++) {
@@ -87,11 +91,22 @@ public class SurfaceCraftingDummyBlockEntity extends BlockEntity {
                 .getRecipeFor(SurfaceCraftingRecipe.Type.INSTANCE, inventory, level);
         if(recipe.isPresent())
         {
+            SurfaceCraftingRecipe foundRecipe = recipe.get();
             for(int i = 0; i < itemStackHandler.getSlots(); i++) {
                 itemStackHandler.setStackInSlot(i, ItemStack.EMPTY);
             }
-
-            return recipe.get().getResultItem(getLevel().registryAccess());
+            level.setBlock(getBlockPos(), Blocks.AIR.defaultBlockState(), 11);
+            SurfaceCraftingRecipe.ResultType resultType = foundRecipe.getResultType();
+            if(resultType == SurfaceCraftingRecipe.ResultType.ITEM)
+                return foundRecipe.getResultItem(getLevel().registryAccess());
+            else if(resultType == SurfaceCraftingRecipe.ResultType.BLOCK)
+            {
+                level.setBlock(getBlockPos(), foundRecipe.getResultBlock(
+                        new BlockPlaceContext(player, InteractionHand.MAIN_HAND, foundRecipe.getResultBlock(), hitResult)), 11);
+            } else {
+                level.setBlock(getBlockPos().below(), foundRecipe.getResultBlock(
+                        new BlockPlaceContext(player, InteractionHand.MAIN_HAND, foundRecipe.getResultBlock(), hitResult)), 11);
+            }
         }
         return ItemStack.EMPTY;
     }

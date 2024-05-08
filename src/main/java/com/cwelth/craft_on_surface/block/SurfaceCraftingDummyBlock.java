@@ -60,11 +60,10 @@ public class SurfaceCraftingDummyBlock extends BaseEntityBlock {
                 if (be != null) {
                     if(pPlayer.isShiftKeyDown())
                     {
-                        ItemStack result = be.craft();
+                        ItemStack result = be.craft(pPlayer, pHit);
                         if(!result.isEmpty())
                         {
                             Containers.dropItemStack(pLevel, pPos.getX(), pPos.getY(), pPos.getZ(), result);
-                            pLevel.setBlock(pPos, Blocks.AIR.defaultBlockState(), 11);
                         }
                     } else
                     {

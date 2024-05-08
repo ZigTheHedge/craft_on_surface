@@ -14,5 +14,6 @@ public class SurfaceCraftingReloadListener extends SimplePreparableReloadListene
     @Override
     protected void apply(Void unused, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
         EventHandlersForge.surfaceCraftingRecipes = null;
+        EventHandlersForge.itemsInLiquidRecipes = null;
     }
 }

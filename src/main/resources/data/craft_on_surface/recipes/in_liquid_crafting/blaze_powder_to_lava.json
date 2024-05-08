@@ -1,0 +1,14 @@
+{
+  "type": "craft_on_surface:items_in_liquid",
+  "materials": [
+    {
+      "item": "minecraft:blaze_powder"
+    },
+    {
+      "item": "minecraft:coal"
+    }
+  ],
+  "output_liquid_block": "minecraft:lava",
+  "input_liquid_block": "minecraft:water",
+  "result_type": "LIQUID"
+}

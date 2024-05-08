@@ -1,6 +1,7 @@
 package com.cwelth.craft_on_surface.compat.jei;
 
 import com.cwelth.craft_on_surface.CraftOnSurface;
+import com.cwelth.craft_on_surface.recipe.ItemsInLiquidRecipe;
 import com.cwelth.craft_on_surface.recipe.SurfaceCraftingRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @JeiPlugin
 public class JEICraftOnSurfacePlugin implements IModPlugin {
     public static RecipeType<SurfaceCraftingRecipe> SURFACE_CRAFTING_RECIPE_TYPE = new RecipeType<>(SurfaceCraftingRecipeCategory.UID, SurfaceCraftingRecipe.class);
+    public static RecipeType<ItemsInLiquidRecipe> ITEMS_IN_LIQUID_RECIPE_TYPE = new RecipeType<>(ItemsInLiquidRecipeCategory.UID, ItemsInLiquidRecipe.class);
 
 
     @Override
@@ -27,6 +29,7 @@ public class JEICraftOnSurfacePlugin implements IModPlugin {
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
         registration.addRecipeCategories(new SurfaceCraftingRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+        registration.addRecipeCategories(new ItemsInLiquidRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
@@ -35,5 +38,8 @@ public class JEICraftOnSurfacePlugin implements IModPlugin {
 
         List<SurfaceCraftingRecipe> SURFACE_CRAFTING_RECIPES = rm.getAllRecipesFor(SurfaceCraftingRecipe.Type.INSTANCE);
         registration.addRecipes(SURFACE_CRAFTING_RECIPE_TYPE, SURFACE_CRAFTING_RECIPES);
+
+        List<ItemsInLiquidRecipe> ITEMS_IN_LIQUID_RECIPES = rm.getAllRecipesFor(ItemsInLiquidRecipe.Type.INSTANCE);
+        registration.addRecipes(ITEMS_IN_LIQUID_RECIPE_TYPE, ITEMS_IN_LIQUID_RECIPES);
     }
 }

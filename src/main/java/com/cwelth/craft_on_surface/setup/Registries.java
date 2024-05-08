@@ -2,6 +2,7 @@ package com.cwelth.craft_on_surface.setup;
 
 import com.cwelth.craft_on_surface.block.SurfaceCraftingDummyBlock;
 import com.cwelth.craft_on_surface.block.entity.SurfaceCraftingDummyBlockEntity;
+import com.cwelth.craft_on_surface.recipe.ItemsInLiquidRecipe;
 import com.cwelth.craft_on_surface.recipe.SurfaceCraftingRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -86,6 +87,8 @@ public class Registries {
 
     public static final RegistryObject<RecipeSerializer<SurfaceCraftingRecipe>> SURFACE_CRAFTING_RECIPE_SERIALIZER =
             SERIALIZERS.register("surface_crafting_recipe", () -> SurfaceCraftingRecipe.Serializer.INSTANCE);
+    public static final RegistryObject<RecipeSerializer<ItemsInLiquidRecipe>> ITEMS_IN_LIQUID_RECIPE_SERIALIZER =
+            SERIALIZERS.register("items_in_liquid", () -> ItemsInLiquidRecipe.Serializer.INSTANCE);
 
 
     public static void setup() {

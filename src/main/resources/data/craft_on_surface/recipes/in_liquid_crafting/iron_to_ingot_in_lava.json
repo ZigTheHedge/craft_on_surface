@@ -1,0 +1,14 @@
+{
+  "type": "craft_on_surface:items_in_liquid",
+  "materials": [
+    {
+      "tag": "forge:ores/iron"
+    }
+  ],
+  "input_liquid_block": "minecraft:lava",
+  "output_item": {
+    "item": "minecraft:iron_ingot"
+  },
+  "consume_liquid": true,
+  "result_type": "ITEM"
+}
