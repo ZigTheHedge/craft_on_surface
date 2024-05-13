@@ -7,6 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
@@ -55,7 +56,7 @@ public class SurfaceCraftingDummyBlockEntity extends BlockEntity {
     {
         int freeSlot = findNearestFreeSlot();
         if(freeSlot == -1) return false;
-        itemStackHandler.setStackInSlot(freeSlot, new ItemStack(item.getItem(), 1));
+        itemStackHandler.setStackInSlot(freeSlot, item.copyWithCount(1));
         item.shrink(1);
         return true;
     }
@@ -93,7 +94,23 @@ public class SurfaceCraftingDummyBlockEntity extends BlockEntity {
         {
             SurfaceCraftingRecipe foundRecipe = recipe.get();
             for(int i = 0; i < itemStackHandler.getSlots(); i++) {
-                itemStackHandler.setStackInSlot(i, ItemStack.EMPTY);
+                if(itemStackHandler.getStackInSlot(i).isDamageableItem())
+                {
+                    ItemStack damageableItem = itemStackHandler.getStackInSlot(i);
+                    /*
+                    int damage = damageableItem.getDamageValue() + 1;
+                    int maxDamage = damageableItem.getMaxDamage();
+                    if(damage >= maxDamage)
+                        damageableItem.shrink(1);
+                    else
+                        damageableItem.setDamageValue(damage);
+
+                     */
+                    damageableItem.hurt(1, player.getRandom(), (ServerPlayer) player);
+                    itemStackHandler.setStackInSlot(i, damageableItem);
+
+                } else
+                    itemStackHandler.setStackInSlot(i, ItemStack.EMPTY);
             }
             level.setBlock(getBlockPos(), Blocks.AIR.defaultBlockState(), 11);
             SurfaceCraftingRecipe.ResultType resultType = foundRecipe.getResultType();

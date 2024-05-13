@@ -10,11 +10,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,12 +25,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ForgeBlockTagsProvider;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.item.ItemTossEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -51,8 +56,8 @@ public class EventHandlersForge {
             if(usedItem.getItem() != Items.AIR && event.getHand() == InteractionHand.MAIN_HAND && !event.getEntity().isShiftKeyDown())
             {
                 Level level = event.getLevel();
-                SimpleContainer testContainer = new SimpleContainer(1);
-                testContainer.setItem(0, usedItem);
+                /* SimpleContainer testContainer = new SimpleContainer(1);
+                testContainer.setItem(0, usedItem); */
                 if(surfaceCraftingRecipes == null)
                 {
                     CraftOnSurface.LOGGER.debug("First time calling surfaceCraftingRecipes. Caching.");
@@ -102,7 +107,7 @@ public class EventHandlersForge {
             {
                 if(recipe.suitsForRecipe(itemStack))
                 {
-                    //CraftOnSurface.LOGGER.debug("Found valid recipe: " + recipe.getId());
+                    //CraftOnSurface.LOGGER.debug("Found valid item for recipe: " + recipe.getId());
                     CompoundTag tag = new CompoundTag();
                     tag = trackedItem.saveWithoutId(tag);
                     CompoundTag forgeData;
@@ -155,6 +160,7 @@ public class EventHandlersForge {
         {
             SimpleContainer inventory = new SimpleContainer(entry.getValue().size());
             BlockPos pos = entry.getKey();
+            BlockPos posAbove = pos.above();
             for(int i = 0; i < entry.getValue().size(); i++)
             {
                 inventory.setItem(i, entry.getValue().get(i).getItem());
@@ -164,9 +170,11 @@ public class EventHandlersForge {
             if(recipe.isPresent())
             {
                 ItemsInLiquidRecipe foundRecipe = recipe.get();
-
-                if(foundRecipe.suitsForLiquid(level.getFluidState(pos)))
+                boolean suitableLiquidFound = foundRecipe.suitsForLiquid(level.getFluidState(pos));
+                boolean suitableLiquidFoundAbove = foundRecipe.suitsForLiquid(level.getFluidState(posAbove));
+                if(suitableLiquidFound || suitableLiquidFoundAbove)
                 {
+                    //CraftOnSurface.LOGGER.debug("Found valid recipe: " + foundRecipe.getId());
                     // Recipe matched. Crafting.
                     if(foundRecipe.getResultType() == ItemsInLiquidRecipe.ResultType.ITEM)
                     {
@@ -175,9 +183,12 @@ public class EventHandlersForge {
                         {
                             entry.getValue().get(i).remove(Entity.RemovalReason.DISCARDED);
                         }
-                        if(foundRecipe.shouldLiquidDisappear())
-                            level.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
-                        Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), resultItem);
+                        if(foundRecipe.shouldLiquidDisappear()) {
+                            if(suitableLiquidFound) level.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
+                            else level.setBlock(posAbove, Blocks.AIR.defaultBlockState(), 11);
+                        }
+                        if(suitableLiquidFound) Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), resultItem);
+                        else Containers.dropItemStack(level, posAbove.getX(), posAbove.getY(), posAbove.getZ(), resultItem);
                     } else
                     {
                         Fluid resultFluid = foundRecipe.getResultFluid();
@@ -185,9 +196,12 @@ public class EventHandlersForge {
                         {
                             entry.getValue().get(i).remove(Entity.RemovalReason.DISCARDED);
                         }
-                        level.setBlock(pos, resultFluid.defaultFluidState().createLegacyBlock(), 11);
+                        if(suitableLiquidFound) level.setBlock(pos, resultFluid.defaultFluidState().createLegacyBlock(), 11);
+                        else level.setBlock(posAbove, resultFluid.defaultFluidState().createLegacyBlock(), 11);
                     }
                     break;
+                } else {
+                    //CraftOnSurface.LOGGER.debug("Found valid recipe, but fluid doesn't match: " + foundRecipe.getId() + " required: " + foundRecipe.getInputLiquid() + ", found: " + level.getFluidState(pos) + ", pos: " + pos);
                 }
             }
         }
@@ -196,8 +210,33 @@ public class EventHandlersForge {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
-    public static void onDatapackReload(AddReloadListenerEvent event)
+    public void onDatapackReload(AddReloadListenerEvent event)
     {
         event.addListener(new SurfaceCraftingReloadListener());
+    }
+
+    @SubscribeEvent
+    public void onAnvilHit(EntityLeaveLevelEvent event)
+    {
+
+        //TODO: Add Anvil crafting
+        /*
+        event.getLevel();
+        if(event.getEntity() instanceof FallingBlockEntity)
+        {
+            FallingBlockEntity fallingEntity = (FallingBlockEntity) event.getEntity();
+            BlockState fallingBlockState = fallingEntity.getBlockState();
+            if(fallingBlockState.is(Blocks.ANVIL) || fallingBlockState.is(Blocks.CHIPPED_ANVIL) || fallingBlockState.is(Blocks.DAMAGED_ANVIL))
+            {
+                event.getLevel();
+                BlockPos pos = fallingEntity.getOnPos();
+                Level level = event.getLevel();
+                AABB area = new AABB(pos.getX(), pos.getY(), pos.getZ(), pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+                List<ItemEntity> items = level.getEntitiesOfClass(ItemEntity.class, area);
+
+                event.getLevel();
+            }
+        }
+         */
     }
 }
