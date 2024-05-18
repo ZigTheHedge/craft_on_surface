@@ -53,36 +53,40 @@ public class EventHandlersForge {
         if(event.getFace() == Direction.UP)
         {
             ItemStack usedItem = event.getItemStack();
-            if(usedItem.getItem() != Items.AIR && event.getHand() == InteractionHand.MAIN_HAND && !event.getEntity().isShiftKeyDown())
+            Level level = event.getLevel();
+            if(usedItem.getItem() != Items.AIR && event.getHand() == InteractionHand.MAIN_HAND && !event.getEntity().isShiftKeyDown() && level.getBlockState(event.getPos().above()).isAir())
             {
-                Level level = event.getLevel();
-                /* SimpleContainer testContainer = new SimpleContainer(1);
+                if(level.getBlockEntity(event.getPos()) == null)
+                {
+                                    /* SimpleContainer testContainer = new SimpleContainer(1);
                 testContainer.setItem(0, usedItem); */
-                if(surfaceCraftingRecipes == null)
-                {
-                    CraftOnSurface.LOGGER.debug("First time calling surfaceCraftingRecipes. Caching.");
-                    surfaceCraftingRecipes = level.getRecipeManager().getAllRecipesFor(SurfaceCraftingRecipe.Type.INSTANCE);
-                    CraftOnSurface.LOGGER.debug(surfaceCraftingRecipes.size() + " recipes loaded.");
-                }
-                BlockState blockState = event.getLevel().getBlockState(event.getPos());
-                if(blockState.is(Registries.SURFACE_CRAFTING_DUMMY_BLOCK.get())) return;
-                //CraftOnSurface.LOGGER.debug("Clicked " + blockState.getBlock() + " with " + usedItem.getItem());
-
-                for(SurfaceCraftingRecipe recipe: surfaceCraftingRecipes)
-                {
-                    if(recipe.suitsForItemAndBlock(usedItem, blockState, level, event.getPos()))
+                    if(surfaceCraftingRecipes == null)
                     {
-                        //CraftOnSurface.LOGGER.debug("Found valid recipe: " + recipe.getId());
-                        level.setBlock(event.getPos().above(), Registries.SURFACE_CRAFTING_DUMMY_BLOCK.get().defaultBlockState(), 11);
-                        SurfaceCraftingDummyBlockEntity be = (SurfaceCraftingDummyBlockEntity)level.getBlockEntity(event.getPos().above());
-                        if(be != null)
+                        CraftOnSurface.LOGGER.debug("First time calling surfaceCraftingRecipes. Caching.");
+                        surfaceCraftingRecipes = level.getRecipeManager().getAllRecipesFor(SurfaceCraftingRecipe.Type.INSTANCE);
+                        CraftOnSurface.LOGGER.debug(surfaceCraftingRecipes.size() + " recipes loaded.");
+                    }
+                    BlockState blockState = event.getLevel().getBlockState(event.getPos());
+                    if(blockState.is(Registries.SURFACE_CRAFTING_DUMMY_BLOCK.get())) return;
+                    //CraftOnSurface.LOGGER.debug("Clicked " + blockState.getBlock() + " with " + usedItem.getItem());
+
+                    for(SurfaceCraftingRecipe recipe: surfaceCraftingRecipes)
+                    {
+                        if(recipe.suitsForItemAndBlock(usedItem, blockState, level, event.getPos()))
                         {
-                            be.pushStack(usedItem);
-                            event.setCanceled(true);
-                            break;
+                            //CraftOnSurface.LOGGER.debug("Found valid recipe: " + recipe.getId());
+                            level.setBlock(event.getPos().above(), Registries.SURFACE_CRAFTING_DUMMY_BLOCK.get().defaultBlockState(), 11);
+                            SurfaceCraftingDummyBlockEntity be = (SurfaceCraftingDummyBlockEntity)level.getBlockEntity(event.getPos().above());
+                            if(be != null)
+                            {
+                                be.pushStack(usedItem);
+                                event.setCanceled(true);
+                                break;
+                            }
                         }
                     }
                 }
+
             }
         }
     }
