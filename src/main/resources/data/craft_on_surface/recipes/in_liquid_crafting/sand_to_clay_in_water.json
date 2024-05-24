@@ -2,12 +2,15 @@
   "type": "craft_on_surface:items_in_liquid",
   "materials": [
     {
-      "tag": "forge:ores/iron"
+      "tag": "minecraft:sand"
+    },
+    {
+      "tag": "minecraft:dirt"
     }
   ],
-  "input_liquid_block": "minecraft:lava",
+  "input_liquid_block": "minecraft:water",
   "output_item": {
-    "item": "minecraft:iron_ingot"
+    "item": "minecraft:clay_ball"
   },
   "consume_liquid": false,
   "result_type": "ITEM"

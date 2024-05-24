@@ -185,7 +185,11 @@ public class EventHandlersForge {
                         ItemStack resultItem = foundRecipe.getResultItem();
                         for(int i = 0; i < entry.getValue().size(); i++)
                         {
-                            entry.getValue().get(i).remove(Entity.RemovalReason.DISCARDED);
+                            int count = entry.getValue().get(i).getItem().getCount();
+                            if(count == 1)
+                                entry.getValue().get(i).remove(Entity.RemovalReason.DISCARDED);
+                            else
+                                entry.getValue().get(i).getItem().shrink(1);
                         }
                         if(foundRecipe.shouldLiquidDisappear()) {
                             if(suitableLiquidFound) level.setBlock(pos, Blocks.AIR.defaultBlockState(), 11);
@@ -198,7 +202,11 @@ public class EventHandlersForge {
                         Fluid resultFluid = foundRecipe.getResultFluid();
                         for(int i = 0; i < entry.getValue().size(); i++)
                         {
-                            entry.getValue().get(i).remove(Entity.RemovalReason.DISCARDED);
+                            int count = entry.getValue().get(i).getItem().getCount();
+                            if(count == 1)
+                                entry.getValue().get(i).remove(Entity.RemovalReason.DISCARDED);
+                            else
+                                entry.getValue().get(i).getItem().shrink(1);
                         }
                         if(suitableLiquidFound) level.setBlock(pos, resultFluid.defaultFluidState().createLegacyBlock(), 11);
                         else level.setBlock(posAbove, resultFluid.defaultFluidState().createLegacyBlock(), 11);
